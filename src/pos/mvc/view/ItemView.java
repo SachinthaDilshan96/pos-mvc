@@ -83,7 +83,7 @@ public class ItemView extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Unit Size");
+        jLabel5.setText("Unit Price");
 
         txtUnitSize.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -131,6 +131,11 @@ public class ItemView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        itemTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itemTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(itemTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -238,16 +243,23 @@ public class ItemView extends javax.swing.JFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
+        updateItem();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
+        deleteItem();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
         saveItem();
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
+        // TODO add your handling code here:
+        searchItem();
+    }//GEN-LAST:event_itemTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -349,6 +361,56 @@ public class ItemView extends javax.swing.JFrame {
         txtPackSize.setText("");
         txtUnitSize.setText("");
         txtQty.setText("");
+    }
+    public void searchItem(){
+        try {
+            String itemCode = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
+            ItemModel itemModel = itemController.searchItem(itemCode);
+            if (itemModel!=null) {
+                txtItemCode.setText(itemModel.getItemCode());
+                txtDescription.setText(itemModel.getDescription());
+                txtPackSize.setText(itemModel.getPackSize());
+                txtUnitSize.setText(Double.toString(itemModel.getUnitPrize()));
+                txtQty.setText(Integer.toString(itemModel.getQoh()));
+            }else{
+                JOptionPane.showMessageDialog(this, "Item Not found");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void updateItem(){
+        try {
+            ItemModel itemModel = new ItemModel(
+                    txtItemCode.getText(),
+                    txtDescription.getText(),
+                    txtPackSize.getText(),
+                    Double.parseDouble(txtUnitSize.getText()),
+                    Integer.parseInt(txtQty.getText())
+            );
+            String resp = itemController.updateItem(itemModel);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllItems();
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+           JOptionPane.showMessageDialog(this, ex);
+
+        }
+    }
+    
+    public void deleteItem(){
+        try {
+            String itemCode = txtItemCode.getText();
+            String resp = itemController.deleteItem(itemCode);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllItems();
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex);
+        }
     }
     
 }

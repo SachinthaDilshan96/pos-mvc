@@ -159,7 +159,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Unit Size"/>
+        <Property name="text" type="java.lang.String" value="Unit Price"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtUnitSize">
@@ -219,6 +219,9 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="itemTableMouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
