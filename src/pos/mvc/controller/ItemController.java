@@ -95,4 +95,17 @@ public class ItemController {
         }
     }
     
+    public String deleteItem(String itemId) throws SQLException{
+        Connection connection = DBConnection.getInstance().getConnection();
+       String query = "delete from item where itemcode=?";
+       PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, itemId);
+        
+        if (preparedStatement.executeUpdate()>0) {
+            return "Success";
+        }else{
+            return "Fail";
+        }
+    }
+    
 }
